@@ -2,15 +2,19 @@ package edu.cmu.Weather;
 
 public class Weather {
     private WeatherService weatherService;
-    private boolean inches;
+    private Scale scale;
+
+    public enum Scale {
+        INCHES, MILLIMETERS
+    }
 
     /**
      * Sets the length scale for rainfall.
      *
      * @param inches if true, sets the scale to inches; if false, sets the scale to millimeters.
      */
-    public void setLengthScale(boolean inches) {
-        this.inches = inches;
+    public void setLengthScale(Scale scale) {
+        this.scale = scale;
     }
 
     /**
@@ -21,10 +25,9 @@ public class Weather {
      */
     public double getRainfall() {
         double wsRainfall = weatherService.getRainfall();
-        if (inches) {
-            return wsRainfall / 25.4;
-        } else {
-            return wsRainfall;
+        if (scale == Scale.MILLIMETERS) {
+            wsRainfall *= 25.4;
         }
+        return wsRainfall;
     }
 }
