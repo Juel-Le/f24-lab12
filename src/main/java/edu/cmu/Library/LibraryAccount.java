@@ -1,5 +1,7 @@
 package edu.cmu.Library;
 
+import javax.management.RuntimeErrorException;
+
 public class LibraryAccount {
     private LibraryService libraryService;
  
@@ -13,9 +15,19 @@ public class LibraryAccount {
      * @return an array of Book objects the user has checked out
      */
     public Book[] getBooks(String userId) {
-        String[] parts = userId.split(":");
-        String name = parts[0];
-        String id = parts[1];
-        return libraryService.getBooks(name, id);        
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");   
+        }
+        if (!userId.contains(":")) {
+            throw new IllegalArgumentException("Invalid user ID format");
+        }
+        try {
+            String[] parts = userId.split(":");
+            String name = parts[0];
+            String id = parts[1];
+            return libraryService.getBooks(name, id); 
+        } catch (Exception e) {
+            throw new RuntimeErrorException(new Error("An error occurred while retrieving books"));
+        }
     }
 }
